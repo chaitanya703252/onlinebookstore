@@ -1,6 +1,9 @@
-
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:18'
+        }
+    }
 
     environment {
         DOCKER_IMAGE = 'onlinebookstore:latest'
@@ -21,7 +24,6 @@ pipeline {
 
         stage('Build App') {
             steps {
-                // Run if you have a "build" script (e.g., React/Angular/Vite)
                 sh 'npm run build || echo "No build script, skipping..."'
             }
         }
@@ -38,7 +40,7 @@ pipeline {
             steps {
                 sh '''
                 docker rm -f onlinebookstore || true
-                docker run -d --name onlinebookstore -p 8286:3000 ${DOCKER_IMAGE}
+                docker run -d --name onlinebookstore -p 3000:3000 ${DOCKER_IMAGE}
                 '''
             }
         }
